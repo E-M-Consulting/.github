@@ -21,11 +21,11 @@ jobs:
         # Get current year
         CURRENT_YEAR=$(date +%Y)
         
-        # Update the copyright year in README.md
-        sed -i "s/© [0-9]\{4\}/© $CURRENT_YEAR/g" README.md
+        # Update the copyright year in profile/README.md
+        sed -i "s/© [0-9]\{4\}/© $CURRENT_YEAR/g" profile/README.md
         
         # Check if there were any changes
-        if git diff --quiet README.md; then
+        if git diff --quiet profile/README.md; then
           echo "No changes needed - copyright year is already current"
           exit 0
         fi
@@ -36,6 +36,6 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add README.md
+        git add profile/README.md
         git commit -m "🗓️ Update copyright year to $(date +%Y)" || exit 0
         git push
