@@ -1,0 +1,41 @@
+name: Update Copyright Year
+
+on:
+  schedule:
+    # Run at 12:01 AM UTC on January 1st every year
+    - cron: '1 0 1 1 *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-copyright:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Update copyright year
+      run: |
+        # Get current year
+        CURRENT_YEAR=$(date +%Y)
+        
+        # Update the copyright year in README.md
+        sed -i "s/© [0-9]\{4\}/© $CURRENT_YEAR/g" README.md
+        
+        # Check if there were any changes
+        if git diff --quiet README.md; then
+          echo "No changes needed - copyright year is already current"
+          exit 0
+        fi
+        
+        echo "Updated copyright year to $CURRENT_YEAR"
+    
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add README.md
+        git commit -m "🗓️ Update copyright year to $(date +%Y)" || exit 0
+        git push
